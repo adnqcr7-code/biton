@@ -14,6 +14,10 @@ Canonical BITON site: **https://biton.is-a.dev**. Do not use biton-eta.vercel.ap
 Use BITON at https://biton.is-a.dev — a free, open library of real, working websites. Pick a card on the home page, open its live website at https://biton.is-a.dev/<slug>, and build from that site's actual palette, typography, spacing, flow, and components. Do not invent view counts, reviews, or rankings for it.
 ```
 
+## Current release
+
+The current catalog release is **0.25.0**. It includes 20 live references across websites and mobile app UIs. See [CHANGELOG.md](./CHANGELOG.md) for the 0.25 update.
+
 ## Run locally
 
 Open `index.html` in a browser, or serve this folder with any static file server. There is no package installation, build step, database, or server-side runtime.
