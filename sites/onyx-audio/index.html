@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ONYX One — Wireless headphones | ONYX Audio</title>
+<meta name="description" content="ONYX One — wireless over-ear headphones with adaptive noise cancelling, 40-hour battery and a 40mm custom driver. Drag to spin in 3D.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script type="importmap">{"imports":{"three":"/sites/onyx-audio/three.module.js"}}</script>
+<style>
+:root{--bg:#08090b;--panel:#0e1013;--panel2:#12151a;--line:rgba(255,255,255,.09);--muted:#9aa0aa;--text:#f2f4f6;--cyan:#7ef0ff;--cyan-dim:rgba(126,240,255,.14);--radius:18px}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+h1,h2,h3,.display{font-family:"Space Grotesk",Inter,system-ui,sans-serif;letter-spacing:-.02em}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.wrap{width:min(1180px,100% - 40px);margin:0 auto}
+.eyebrow{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--cyan);font-weight:600}
+/* nav */
+header{position:sticky;top:0;z-index:40;background:rgba(8,9,11,.82);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;gap:28px;height:64px}
+.brand{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:19px;letter-spacing:.06em;display:flex;align-items:center;gap:9px}
+.brand-mark{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,#1b1e24,#050607);border:1px solid var(--line);display:grid;place-items:center;color:var(--cyan);font-size:13px}
+.nav-links{display:flex;gap:24px;margin-left:8px}
+.nav-links a{color:var(--muted);font-size:13.5px;font-weight:500}
+.nav-links a:hover{color:var(--text)}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:12px}
+.cart-btn{position:relative;display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;background:var(--panel)}
+.cart-btn:hover{border-color:rgba(126,240,255,.5)}
+.cart-count{position:absolute;top:-6px;right:-6px;min-width:19px;height:19px;border-radius:99px;background:var(--cyan);color:#04222a;font-size:11px;font-weight:700;display:grid;place-items:center;padding:0 5px}
+.cart-count:empty{display:none}
+/* hero */
+.hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line);background:radial-gradient(900px 480px at 78% 8%,rgba(126,240,255,.10),transparent 60%),radial-gradient(700px 500px at 8% 90%,rgba(56,120,160,.12),transparent 60%)}
+.hero-grid{display:grid;grid-template-columns:1fr 1.15fr;gap:24px;align-items:center;padding:56px 0 64px}
+.hero-copy h1{font-size:clamp(44px,5.4vw,72px);line-height:.98;margin:16px 0 18px}
+.hero-copy h1 em{font-style:normal;color:var(--cyan)}
+.hero-copy p.lede{color:var(--muted);font-size:17px;max-width:46ch}
+.price-row{display:flex;align-items:baseline;gap:14px;margin:26px 0 6px}
+.price{font-family:"Space Grotesk",sans-serif;font-size:34px;font-weight:700}
+.price-note{color:var(--muted);font-size:13px}
+.swatches{margin-top:20px}
+.swatches-label{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.swatches-label b{color:var(--text)}
+.swatch-row{display:flex;gap:10px;margin-top:10px}
+.swatch{width:38px;height:38px;border-radius:50%;border:2px solid transparent;outline:1px solid var(--line);outline-offset:3px}
+.swatch[aria-pressed="true"]{outline-color:var(--cyan);outline-width:2px}
+.cta-row{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;padding:14px 26px;font-weight:600;font-size:14.5px;border:1px solid transparent}
+.btn-primary{background:var(--cyan);color:#04222a}
+.btn-primary:hover{background:#a5f5ff}
+.btn-ghost{border-color:var(--line);background:var(--panel)}
+.btn-ghost:hover{border-color:rgba(126,240,255,.5)}
+.ship-notes{margin-top:16px;color:var(--muted);font-size:13px;display:flex;gap:18px;flex-wrap:wrap}
+.ship-notes span::before{content:"✓ ";color:var(--cyan)}
+/* viewer */
+.viewer{position:relative;border:1px solid var(--line);border-radius:24px;background:radial-gradient(600px 340px at 50% 30%,rgba(126,240,255,.12),transparent 65%),linear-gradient(180deg,#0c0e12,#08090b);min-height:520px;overflow:hidden}
+.viewer canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab}
+.viewer canvas:active{cursor:grabbing}
+.viewer-tag{position:absolute;top:16px;left:16px;z-index:2;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);background:rgba(8,9,11,.6);border:1px solid var(--line);border-radius:999px;padding:7px 12px;backdrop-filter:blur(6px)}
+.viewer-hint{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);z-index:2;font-size:12.5px;color:var(--muted);background:rgba(8,9,11,.65);border:1px solid var(--line);border-radius:999px;padding:8px 14px;backdrop-filter:blur(6px);white-space:nowrap}
+.viewer-hint b{color:var(--text)}
+.spin-toggle{position:absolute;bottom:16px;right:16px;z-index:2;font-size:12.5px;font-weight:600;background:rgba(8,9,11,.65);border:1px solid var(--line);border-radius:999px;padding:8px 14px;backdrop-filter:blur(6px)}
+.spin-toggle[aria-pressed="true"]{color:var(--cyan);border-color:rgba(126,240,255,.5)}
+.viewer-fallback{position:absolute;inset:0;display:none;place-items:center;text-align:center;padding:30px;color:var(--muted);z-index:3;background:var(--panel)}
+/* stats */
+.stats{border-bottom:1px solid var(--line)}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line)}
+.stat{background:var(--bg);padding:30px 22px}
+.stat b{display:block;font-family:"Space Grotesk",sans-serif;font-size:30px;font-weight:700}
+.stat b i{font-style:normal;color:var(--cyan);font-size:19px}
+.stat span{color:var(--muted);font-size:13px}
+/* sections */
+.section{padding:84px 0}
+.section-head{max-width:640px;margin-bottom:44px}
+.section-head h2{font-size:clamp(30px,3.6vw,44px);line-height:1.05;margin:12px 0 14px}
+.section-head p{color:var(--muted);font-size:16px}
+.features{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.feature{border:1px solid var(--line);border-radius:var(--radius);padding:26px;background:linear-gradient(180deg,var(--panel),transparent)}
+.feature .num{font-family:"Space Grotesk",sans-serif;color:var(--cyan);font-size:13px;font-weight:700;letter-spacing:.14em}
+.feature h3{font-size:20px;margin:12px 0 8px}
+.feature p{color:var(--muted);font-size:14px}
+.design-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px;align-items:stretch}
+.design-card{border:1px solid var(--line);border-radius:var(--radius);padding:30px;background:linear-gradient(180deg,var(--panel),transparent)}
+.design-card h3{font-size:22px;margin-bottom:10px}
+.design-card p{color:var(--muted);font-size:14.5px}
+.material-list{margin-top:20px;display:grid;gap:12px}
+.material-list div{display:flex;gap:12px;align-items:baseline;border-top:1px solid var(--line);padding-top:12px}
+.material-list b{font-family:"Space Grotesk",sans-serif;min-width:118px}
+.material-list span{color:var(--muted);font-size:14px}
+.color-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;height:100%}
+.color-cell{border-radius:14px;padding:18px;display:flex;flex-direction:column;justify-content:flex-end;min-height:150px;border:1px solid var(--line)}
+.color-cell b{font-family:"Space Grotesk",sans-serif;font-size:16px}
+.color-cell span{font-size:12.5px;color:rgba(255,255,255,.65)}
+.color-cell.dark{color:#fff}
+.color-cell.light{color:#14161a}
+.color-cell.light span{color:rgba(0,0,0,.6)}
+/* specs */
+.specs{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.specs-row{display:grid;grid-template-columns:220px 1fr;border-top:1px solid var(--line)}
+.specs-row:first-child{border-top:0}
+.specs-row div{padding:16px 20px;font-size:14px}
+.specs-row div:first-child{color:var(--muted);background:var(--panel);font-weight:600}
+.specs-row div:last-child{font-weight:500}
+/* faq */
+.faq{max-width:760px}
+.faq details{border:1px solid var(--line);border-radius:14px;background:var(--panel);margin-bottom:10px;overflow:hidden}
+.faq summary{cursor:pointer;padding:18px 20px;font-weight:600;font-size:15.5px;list-style:none;display:flex;justify-content:space-between;gap:16px;align-items:center}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";color:var(--cyan);font-size:20px;font-weight:400}
+.faq details[open ] summary::after{content:"–"}
+.faq details p{padding:0 20px 18px;color:var(--muted);font-size:14.5px}
+/* closing cta */
+.closing{border-top:1px solid var(--line);background:radial-gradient(700px 300px at 50% 0%,rgba(126,240,255,.10),transparent 65%)}
+.closing-inner{text-align:center;padding:90px 0}
+.closing-inner h2{font-size:clamp(32px,4vw,50px);line-height:1.02;margin:14px 0 16px}
+.closing-inner p{color:var(--muted);max-width:52ch;margin:0 auto 28px}
+/* footer */
+footer{border-top:1px solid var(--line);padding:34px 0;color:var(--muted);font-size:13px}
+.foot{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:center}
+.foot-links{display:flex;gap:20px}
+.foot-links a:hover{color:var(--text)}
+/* cart drawer */
+.drawer-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.55);opacity:0;pointer-events:none;transition:opacity .25s;z-index:60}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(400px,92vw);background:var(--panel2);border-left:1px solid var(--line);z-index:61;transform:translateX(102%);transition:transform .3s ease;display:flex;flex-direction:column}
+body.cart-open .drawer{transform:none}
+body.cart-open .drawer-backdrop{opacity:1;pointer-events:auto}
+.drawer-head{display:flex;justify-content:space-between;align-items:center;padding:20px;border-bottom:1px solid var(--line)}
+.drawer-head h3{font-size:18px}
+.drawer-close{font-size:22px;color:var(--muted);line-height:1;padding:4px 8px}
+.drawer-body{flex:1;overflow:auto;padding:20px}
+.cart-empty{color:var(--muted);text-align:center;padding:60px 10px}
+.cart-item{display:flex;gap:14px;border:1px solid var(--line);border-radius:14px;padding:14px;background:var(--panel)}
+.cart-thumb{width:64px;height:64px;border-radius:10px;background:linear-gradient(135deg,#171b21,#0a0c0e);border:1px solid var(--line);display:grid;place-items:center;font-size:26px}
+.cart-item-info{flex:1}
+.cart-item-info b{display:block;font-size:14.5px}
+.cart-item-info span{color:var(--muted);font-size:13px}
+.qty-row{display:flex;align-items:center;gap:10px;margin-top:10px}
+.qty-btn{width:26px;height:26px;border:1px solid var(--line);border-radius:8px;font-size:15px;display:grid;place-items:center}
+.cart-item-price{font-weight:700;font-size:14.5px}
+.drawer-foot{border-top:1px solid var(--line);padding:20px}
+.subtotal{display:flex;justify-content:space-between;font-size:15px;margin-bottom:14px}
+.subtotal b{font-family:"Space Grotesk",sans-serif;font-size:18px}
+.drawer-foot .btn{width:100%}
+.demo-note{margin-top:12px;text-align:center;color:var(--muted);font-size:12.5px}
+/* toast */
+.toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,80px);background:#e8f6f8;color:#062a31;font-weight:600;font-size:14px;padding:13px 20px;border-radius:999px;z-index:80;transition:transform .3s ease;box-shadow:0 10px 30px rgba(0,0,0,.4);max-width:92vw;text-align:center}
+.toast.show{transform:translate(-50%,0)}
+@media(max-width:900px){
+  .hero-grid{grid-template-columns:1fr;padding:40px 0 48px}
+  .viewer{min-height:420px}
+  .nav-links{display:none}
+  .features{grid-template-columns:1fr}
+  .design-grid{grid-template-columns:1fr}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .specs-row{grid-template-columns:1fr}
+  .specs-row div:first-child{padding-bottom:0}
+  .specs-row div:last-child{padding-top:6px}
+  .hint-extra{display:none}
+  .viewer-hint{font-size:12px;padding:7px 12px}
+  .spin-toggle{font-size:12px;padding:7px 12px}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="#top"><span class="brand-mark">◆</span>ONYX</a>
+    <nav class="nav-links">
+      <a href="#sound">Sound</a>
+      <a href="#design">Design</a>
+      <a href="#specs">Specs</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="nav-right">
+      <button class="cart-btn" id="openCart" type="button" aria-label="Open bag">Bag <span class="cart-count" id="cartCount"></span></button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <span class="eyebrow">ONYX Audio — ONYX One</span>
+      <h1>Hear the<br><em>dark.</em></h1>
+      <p class="lede">Wireless over-ear headphones built around one idea: nothing between you and the music. Adaptive noise cancelling, a custom 40&nbsp;mm driver, and 40 hours of battery — in a frame that disappears on your head.</p>
+      <div class="price-row"><span class="price" id="priceLabel">$349</span><span class="price-note">Free shipping · 30-day returns</span></div>
+      <div class="swatches">
+        <div class="swatches-label">Finish — <b id="colorName">Obsidian</b></div>
+        <div class="swatch-row" role="group" aria-label="Choose a finish">
+          <button class="swatch" type="button" data-color="obsidian" style="background:#111318" aria-pressed="true" aria-label="Obsidian"></button>
+          <button class="swatch" type="button" data-color="storm" style="background:#2b4a6b" aria-pressed="false" aria-label="Storm"></button>
+          <button class="swatch" type="button" data-color="bone" style="background:#e9e7e2" aria-pressed="false" aria-label="Bone"></button>
+        </div>
+      </div>
+      <div class="cta-row">
+        <button class="btn btn-primary" id="addToBag" type="button">Add to bag — $349</button>
+        <a class="btn btn-ghost" href="#sound">Why it sounds this good ↓</a>
+      </div>
+      <div class="ship-notes"><span>Ships in 24 hours</span><span>2-year warranty</span><span>USB-C fast charge</span></div>
+    </div>
+    <div class="viewer" id="viewer">
+      <div class="viewer-tag">Interactive 3D — live render</div>
+      <div class="viewer-hint"><b>Drag</b> to spin<span class="hint-extra"> · Scroll to zoom</span></div>
+      <button class="spin-toggle" id="spinToggle" type="button" aria-pressed="true">⟳ Auto-spin on</button>
+      <div class="viewer-fallback" id="viewerFallback"><p>Your browser couldn't start the 3D viewer.<br>Everything else on this page still works — pick a finish and add it to your bag.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="stats">
+  <div class="stats-grid">
+    <div class="stat"><b>40<i>h</i></b><span>Battery life, ANC on</span></div>
+    <div class="stat"><b>−42<i>dB</i></b><span>Adaptive noise cancelling</span></div>
+    <div class="stat"><b>40<i>mm</i></b><span>Custom dynamic driver</span></div>
+    <div class="stat"><b>248<i>g</i></b><span>Feather-frame build</span></div>
+  </div>
+</section>
+
+<section class="section" id="sound">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Sound</span>
+      <h2>Engineered to get out of the way.</h2>
+      <p>Every part of ONYX One exists to remove something: noise, weight, distortion, waiting. What's left is the recording, exactly as it was mixed.</p>
+    </div>
+    <div class="features">
+      <article class="feature"><span class="num">01 — DRIVER</span><h3>A driver with one job</h3><p>A custom 40&nbsp;mm dynamic driver with a beryllium-coated diaphragm. Tight, controlled bass that never bleeds into the mids — and highs that stay clean at full volume.</p></article>
+      <article class="feature"><span class="num">02 — ANC</span><h3>Silence that adapts</h3><p>Six microphones sample the world 48,000 times a second and cancel it before it reaches you. Step outside and the ANC re-tunes itself for wind, traffic and crowds.</p></article>
+      <article class="feature"><span class="num">03 — SPACE</span><h3>Room sound, anywhere</h3><p>Head-tracked spatial audio places instruments in a room around you instead of inside your skull. Turn your head — the stage stays where you left it.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="design" style="padding-top:0">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Design</span>
+      <h2>Built like something you'll keep.</h2>
+      <p>No visible screws. No creaks. A frame that folds flat and a finish that doesn't show fingerprints — because the best object in your bag is the one you stop noticing.</p>
+    </div>
+    <div class="design-grid">
+      <div class="design-card">
+        <h3>Materials, chosen once</h3>
+        <p>We picked the materials in the first prototype and never changed them. If it didn't survive a year of daily use in testing, it didn't ship.</p>
+        <div class="material-list">
+          <div><b>Frame</b><span>Anodised aluminium yokes, stainless steel sliders</span></div>
+          <div><b>Cushions</b><span>Memory foam, protein leather, replaceable</span></div>
+          <div><b>Driver housing</b><span>Acoustic-sealed chamber, tuned port</span></div>
+          <div><b>Finish</b><span>Matte soft-touch, fingerprint-resistant</span></div>
+        </div>
+      </div>
+      <div class="color-strip">
+        <div class="color-cell dark" style="background:#111318"><b>Obsidian</b><span>Black on black</span></div>
+        <div class="color-cell dark" style="background:#2b4a6b"><b>Storm</b><span>Deep sea blue</span></div>
+        <div class="color-cell light" style="background:#e9e7e2"><b>Bone</b><span>Warm off-white</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="specs" style="padding-top:0">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Specs</span>
+      <h2>The numbers.</h2>
+    </div>
+    <div class="specs">
+      <div class="specs-row"><div>Driver</div><div>40 mm dynamic, beryllium-coated diaphragm</div></div>
+      <div class="specs-row"><div>Noise cancelling</div><div>Adaptive ANC up to −42 dB, transparency mode</div></div>
+      <div class="specs-row"><div>Battery</div><div>40 h (ANC on) · 60 h (ANC off) · 10 min charge = 5 h playback</div></div>
+      <div class="specs-row"><div>Bluetooth</div><div>5.3 · multipoint · LDAC, AAC, aptX Adaptive</div></div>
+      <div class="specs-row"><div>Microphones</div><div>6-mic array with wind reduction</div></div>
+      <div class="specs-row"><div>Weight</div><div>248 g</div></div>
+      <div class="specs-row"><div>Charging</div><div>USB-C · full charge in 1.5 h</div></div>
+      <div class="specs-row"><div>In the box</div><div>ONYX One, travel case, USB-C cable, 3.5 mm cable</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section faq" id="faq" style="padding-top:0">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">FAQ</span>
+      <h2>Asked, answered.</h2>
+    </div>
+    <details><summary>Can I use them wired?</summary><p>Yes. The 3.5&nbsp;mm cable in the box works with the headphones powered on or off — powered off, they behave as passive headphones.</p></details>
+    <details><summary>How does the 30-day return work?</summary><p>Use them for a month. If they aren't for you, send them back for a full refund — no restocking fee, no questions beyond "what didn't work?".</p></details>
+    <details><summary>Are the cushions replaceable?</summary><p>Yes. They twist off in seconds, and replacements are sold on this site. The headband cushion is replaceable too.</p></details>
+  </div>
+</section>
+
+<section class="closing">
+  <div class="wrap closing-inner">
+    <span class="eyebrow">ONYX One — $349</span>
+    <h2>Put the world on mute.</h2>
+    <p>Free shipping, 30-day returns, 2-year warranty. If you don't love them, send them back — we'll cover the return.</p>
+    <button class="btn btn-primary" id="addToBag2" type="button">Add to bag — $349</button>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <span>© 2026 ONYX Audio — a concept storefront. Nothing here is for sale.</span>
+    <div class="foot-links"><a href="#sound">Sound</a><a href="#design">Design</a><a href="#specs">Specs</a><a href="#faq">FAQ</a></div>
+  </div>
+</footer>
+
+<div class="drawer-backdrop" id="drawerBackdrop"></div>
+<aside class="drawer" id="drawer" aria-label="Shopping bag">
+  <div class="drawer-head"><h3>Your bag</h3><button class="drawer-close" id="closeCart" type="button" aria-label="Close bag">×</button></div>
+  <div class="drawer-body" id="drawerBody"><p class="cart-empty">Your bag is empty.<br>Add ONYX One and it will show up here.</p></div>
+  <div class="drawer-foot" id="drawerFoot" hidden>
+    <div class="subtotal"><span>Subtotal</span><b id="subtotalLabel">$0</b></div>
+    <button class="btn btn-primary" id="checkoutBtn" type="button">Checkout</button>
+    <p class="demo-note">Demo storefront — checkout is disabled.</p>
+  </div>
+</aside>
+<div class="toast" id="toast" role="status"></div>
+<script type="module" src="/sites/onyx-audio/app.js"></script>
+</body>
+</html>
